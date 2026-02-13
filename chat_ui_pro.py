@@ -7,12 +7,19 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import re
+from functools import lru_cache
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.safety import SafetyGuardrails
 from tools.tax_tool import calculate_tax
 
+# Cache for faster responses
+@lru_cache(maxsize=100)
+def cached_tax_calc(price, category):
+    return calculate_tax(price, category)
+
+@lru_cache(maxsize=50)
 def get_real_product_data(product_name):
     """Scrape real product data from Jumia."""
     try:
@@ -23,7 +30,7 @@ def get_real_product_data(product_name):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         
-        response = requests.get(url, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, timeout=3)
         soup = BeautifulSoup(response.content, 'html.parser')
         
         product = soup.find('article', class_='prd')
@@ -72,7 +79,7 @@ def chat_response(message, history):
         image_url = product_data['image']
         product_name = product_data['name']
         
-        tax = calculate_tax(price, 'electronics')
+        tax = cached_tax_calc(price, 'electronics')
         search_query = product.replace(' ', '+')
         status = "✅ LIVE DATA" if product_data['found'] else "📊 ESTIMATED"
         
@@ -211,9 +218,11 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 7866))
     print(f"Starting Professional Chat UI on port {port}...")
-    demo.launch(
+    demo.queue(max_size=20).launch(
         server_name="0.0.0.0",
         server_port=port,
         show_error=True,
-        share=False
+        share=False,
+        favicon_path=None,
+        show_api=False
     )

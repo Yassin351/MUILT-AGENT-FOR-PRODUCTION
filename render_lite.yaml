@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: kenya-procurement-ai-lite
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install --no-cache-dir gradio==4.44.0
+    startCommand: python chat_ui_lite.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GRADIO_ANALYTICS_ENABLED
+        value: False
+    healthCheckPath: /
