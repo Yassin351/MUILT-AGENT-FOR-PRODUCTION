@@ -1,0 +1,11 @@
+gradio>=4.0.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+tenacity>=8.2.0
+lxml>=4.9.0
+loguru>=0.7.0
+structlog>=25.0.0
+uvicorn>=0.30.0
+gunicorn>=21.0.0

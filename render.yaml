@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: kenya-procurement-ai
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: python chat_ui_pro.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GOOGLE_API_KEY
+        sync: false
+    healthCheckPath: /

@@ -1,0 +1,2 @@
+class MLModelError(Exception):
+    pass
